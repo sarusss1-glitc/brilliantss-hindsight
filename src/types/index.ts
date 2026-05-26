@@ -1,7 +1,7 @@
 export type Direction = "up" | "down" | "left" | "right";
 
 export type PieceColor =
-  | "red" | "blue" | "green" | "purple" | "orange" | "teal";
+  | "red" | "blue" | "green" | "purple" | "orange" | "teal" | "yellow";
 
 export type Category =
   | "tutorial" | "chain" | "recursive" | "tree" | "parallel" | "bottleneck";

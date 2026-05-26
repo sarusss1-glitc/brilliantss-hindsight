@@ -1,5 +1,17 @@
 import type { Direction, Piece } from "../types";
 
+/**
+ * Stack (undoPath) rules:
+ * - undoPath[0] is the current undo direction; each success shifts (removes) it.
+ * - Exit: target OOB only when undoPath.length === 1 (final segment).
+ * - Invalid: OOB with length > 1, or in-bounds move that would empty the stack.
+ *
+ * Elastic push:
+ * - Occupied target → push blocker one cell along move vector if landing in-bounds and empty.
+ * - Pushed piece keeps its undoPath; only the active piece consumes a segment.
+ * - At most one piece pushed per move.
+ */
+
 export function getUndoTargetFromPosition(
   row: number,
   col: number,

@@ -1,4 +1,2 @@
-// World 1 — first 10 levels (push-enabled engine).
-// Replace WORLD_1_LEVELS import when pasting an external JSON array.
-
-export { WORLD_1_LEVELS as LEVELS } from "./world1Levels";
+// Advanced baseline curve (stack + elastic push).
+export { ADVANCED_LEVELS as LEVELS } from "./advancedLevels";

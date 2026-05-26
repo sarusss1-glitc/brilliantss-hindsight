@@ -8,6 +8,7 @@ const COLORS: Record<PieceColor, string> = {
   purple: "#8E24AA",
   orange: "#FB8C00",
   teal: "#00897B",
+  yellow: "#FDD835",
 };
 
 const UNDO_ARROW: Record<Direction, string> = {
