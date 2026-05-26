@@ -114,9 +114,9 @@ describe("undoPiece", () => {
   });
 
   it("8. elastic push — moves blocker and active piece", () => {
-    const pieces = [
-      { id: "B", color: "blue" as const, row: 1, col: 1, movesLeft: 1, undoPath: ["down"] as const },
-      { id: "R", color: "red" as const, row: 2, col: 1, movesLeft: 3, undoPath: ["down", "down", "down"] as const },
+    const pieces: Piece[] = [
+      p("B", 1, 1, ["down"]),
+      { ...p("R", 2, 1, ["down", "down", "down"]), color: "red" as const },
     ];
     const { result, updatedPieces } = undoPiece(pieces, "R");
 
