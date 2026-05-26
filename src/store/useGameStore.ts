@@ -78,7 +78,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return goToLevel(state, state.currentLevelId);
 
     case "NEXT_LEVEL": {
-      if (state.currentLevelId < 15) {
+      const maxId = LEVELS.reduce((m, l) => Math.max(m, l.id), 0);
+      if (state.currentLevelId < maxId) {
         return goToLevel(state, state.currentLevelId + 1);
       }
       return { ...state, screen: "map", won: false };

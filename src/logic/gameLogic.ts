@@ -43,6 +43,41 @@ export function getBlocker(
   );
 }
 
+function isCellFree(
+  pieces: Piece[],
+  row: number,
+  col: number,
+  excludeIds: string[],
+): boolean {
+  return !pieces.some(
+    (p) => !excludeIds.includes(p.id) && p.row === row && p.col === col,
+  );
+}
+
+function applyInBoundsMove(
+  pieces: Piece[],
+  pieceId: string,
+  target: { row: number; col: number },
+  newPath: Direction[],
+  push?: { blockerId: string; toRow: number; toCol: number },
+): Piece[] {
+  return pieces.map((p) => {
+    if (p.id === pieceId) {
+      return {
+        ...p,
+        row: target.row,
+        col: target.col,
+        undoPath: newPath,
+        movesLeft: newPath.length,
+      };
+    }
+    if (push && p.id === push.blockerId) {
+      return { ...p, row: push.toRow, col: push.toCol };
+    }
+    return p;
+  });
+}
+
 export function undoPiece(
   pieces: Piece[],
   pieceId: string,
@@ -73,33 +108,45 @@ export function undoPiece(
     };
   }
 
-  const blocker = getBlocker(pieces, target, pieceId);
-  if (blocker) {
-    return {
-      updatedPieces: pieces,
-      result: "blocked",
-      blockerId: blocker.id,
-    };
-  }
-
   const newPath = piece.undoPath.slice(1);
   if (newPath.length === 0) {
     return { updatedPieces: pieces, result: "invalid", blockerId: null };
   }
 
-  const updatedPieces = pieces.map((p) =>
-    p.id === pieceId
-      ? {
-          ...p,
-          row: target.row,
-          col: target.col,
-          undoPath: newPath,
-          movesLeft: newPath.length,
-        }
-      : p,
-  );
+  const blocker = getBlocker(pieces, target, pieceId);
+  if (blocker) {
+    const dRow = target.row - piece.row;
+    const dCol = target.col - piece.col;
+    const pushRow = blocker.row + dRow;
+    const pushCol = blocker.col + dCol;
 
-  return { updatedPieces, result: "success", blockerId: null };
+    if (
+      isOutOfBounds(pushRow, pushCol) ||
+      !isCellFree(pieces, pushRow, pushCol, [pieceId, blocker.id])
+    ) {
+      return {
+        updatedPieces: pieces,
+        result: "blocked",
+        blockerId: blocker.id,
+      };
+    }
+
+    return {
+      updatedPieces: applyInBoundsMove(pieces, pieceId, target, newPath, {
+        blockerId: blocker.id,
+        toRow: pushRow,
+        toCol: pushCol,
+      }),
+      result: "success",
+      blockerId: null,
+    };
+  }
+
+  return {
+    updatedPieces: applyInBoundsMove(pieces, pieceId, target, newPath),
+    result: "success",
+    blockerId: null,
+  };
 }
 
 export function checkWin(pieces: Piece[]): boolean {
