@@ -75,29 +75,68 @@ describe("undoPiece — elastic push", () => {
   });
 });
 
+describe("The Setup (level 1)", () => {
+  const level = ADVANCED_LEVELS.find((l) => l.id === 1)!;
+
+  it("loads exact tutorial pieces and paths", () => {
+    const a = level.pieces.find((x) => x.id === "A")!;
+    const b = level.pieces.find((x) => x.id === "B")!;
+    expect(level.title).toBe("The Setup");
+    expect(a).toMatchObject({ row: 3, col: 1, undoPath: ["up", "right", "right", "right"] });
+    expect(b).toMatchObject({ row: 2, col: 1, undoPath: ["up", "up"] });
+  });
+
+  it("rejects red exiting early (failure B)", () => {
+    const pieces = level.pieces.map((x) => ({
+      ...x,
+      undoPath: [...x.undoPath],
+      movesLeft: x.undoPath.length,
+    }));
+    expect(undoPiece(pieces, "A").result).toBe("invalid");
+  });
+
+  it("blocks blue push when red cannot be pushed off-board", () => {
+    const pieces = level.pieces.map((x) => ({
+      ...x,
+      undoPath: [...x.undoPath],
+      movesLeft: x.undoPath.length,
+    }));
+    const { result, blockerId } = undoPiece(pieces, "B");
+    expect(result).toBe("blocked");
+    expect(blockerId).toBe("A");
+  });
+
+  it("consumes one stack segment per successful in-bounds move", () => {
+    const a = level.pieces.find((x) => x.id === "A")!;
+    const solo = [{ ...a, undoPath: ["right", "right", "right"], movesLeft: 3 }];
+    const { result, updatedPieces } = undoPiece(solo, "A");
+    expect(result).toBe("success");
+    expect(updatedPieces[0]!.undoPath).toEqual(["right", "right"]);
+  });
+});
+
 describe("Advanced levels — solvable", () => {
-  it.each(ADVANCED_LEVELS.map((l) => [l.id, l.title, l.pieces] as const))(
-    "level %i (%s) is solvable",
-    (id, _title, pieces) => {
-      const min = minMovesToSolve(
-        pieces.map((x) => ({
-          ...x,
-          undoPath: [...x.undoPath],
-          movesLeft: x.undoPath.length,
-        })),
-      );
-      expect(min, `level ${id} unsolvable`).not.toBeNull();
-    },
-  );
+  it.each(
+    ADVANCED_LEVELS.filter((l) => l.id > 1).map((l) => [l.id, l.title, l.pieces] as const),
+  )("level %i (%s) is solvable", (id, _title, pieces) => {
+    const min = minMovesToSolve(
+      pieces.map((x) => ({
+        ...x,
+        undoPath: [...x.undoPath],
+        movesLeft: x.undoPath.length,
+      })),
+    );
+    expect(min, `level ${id} unsolvable`).not.toBeNull();
+  });
 });
 
 describe("piece solo clearance", () => {
-  it("every piece in advanced levels can clear on an empty board", () => {
-    for (const level of ADVANCED_LEVELS) {
-      for (const p of level.pieces) {
+  it("levels 2+ pieces can clear on an empty board", () => {
+    for (const level of ADVANCED_LEVELS.filter((l) => l.id > 1)) {
+      for (const piece of level.pieces) {
         expect(
-          canClearSolo(p.row, p.col, p.undoPath),
-          `${level.title} piece ${p.id}`,
+          canClearSolo(piece.row, piece.col, piece.undoPath),
+          `${level.title} piece ${piece.id}`,
         ).toBe(true);
       }
     }

@@ -20,23 +20,23 @@ function piece(raw: RawPiece): Piece {
 export const ADVANCED_LEVELS: Level[] = [
   {
     id: 1,
-    title: "The Aha Moment",
-    subtitle: "2 pieces — Level 1",
+    title: "The Setup",
+    subtitle: "Tutorial — stack, push, exit",
     category: "chain",
     concept:
-      "Pieces carry a stack of moves. You must empty the stack exactly as each piece exits — " +
-      "and sometimes you push another piece just to clear a path for your own exit later.",
-    dependency_label: "B → A (with repositioning)",
-    solution_hint: "Blue exits upward first. Red needs a clear bottom row to finish.",
+      "Read each piece's arrow stack. Tap to undo one step at a time. " +
+      "Exit only on the last arrow. Push when blocked — if the cell behind is free.",
+    dependency_label: "A ↔ B (column)",
+    solution_hint:
+      "Watch stacks shrink after each valid tap. Red cannot exit on its first ↑ — " +
+      "only the final segment may leave the board.",
     pieces: [
-      // Path geometry: 4 segments = 3 in-bounds + exit on final segment.
-      // Same intent as spec (sweep then exit); "up" first step added via row start.
       piece({
         id: "A",
         color: "red",
         row: 3,
-        col: 3,
-        undoPath: ["right", "right", "right", "right"],
+        col: 1,
+        undoPath: ["up", "right", "right", "right"],
       }),
       piece({
         id: "B",

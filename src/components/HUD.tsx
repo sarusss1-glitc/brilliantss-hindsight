@@ -30,6 +30,10 @@ export function HUD({
           {moves} {moves === 1 ? "move" : "moves"}
         </div>
       </div>
+      <p className="mt-2 text-center text-xs text-white/55">
+        Each piece shows its full <span className="text-white/80">undo stack</span> — bold
+        arrow on top is the <span className="text-white/80">next</span> move.
+      </p>
     </div>
   );
 }

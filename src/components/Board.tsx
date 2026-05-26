@@ -18,12 +18,15 @@ function BoardInner({ pieces, onUndo }: BoardProps) {
     (id: string) => {
       const { result, blockerId } = undoPiece(pieces, id);
 
-      if (result === "blocked" && blockerId) {
-        if (shakeTimer.current) clearTimeout(shakeTimer.current);
-        if (highlightTimer.current) clearTimeout(highlightTimer.current);
+      if (shakeTimer.current) clearTimeout(shakeTimer.current);
+      if (highlightTimer.current) clearTimeout(highlightTimer.current);
+
+      if (result === "invalid" || result === "blocked") {
         setShakingId(id);
-        setHighlightedId(blockerId);
         shakeTimer.current = setTimeout(() => setShakingId(null), 400);
+      }
+      if (result === "blocked" && blockerId) {
+        setHighlightedId(blockerId);
         highlightTimer.current = setTimeout(() => setHighlightedId(null), 600);
       }
 
@@ -34,10 +37,10 @@ function BoardInner({ pieces, onUndo }: BoardProps) {
 
   return (
     <div
-      className="mx-auto w-full max-w-[min(320px,90vw)] rounded-xl p-2"
+      className="mx-auto w-full max-w-[min(320px,90vw)] rounded-xl p-2 pt-6"
       style={{ backgroundColor: "#0D1B2A" }}
     >
-      <div className="relative aspect-square w-full">
+      <div className="relative aspect-square w-full overflow-visible">
         <div
           className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-2"
           aria-hidden
@@ -50,11 +53,11 @@ function BoardInner({ pieces, onUndo }: BoardProps) {
             />
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-0 grid grid-cols-4 grid-rows-4 gap-2">
+        <div className="pointer-events-none absolute inset-0 grid grid-cols-4 grid-rows-4 gap-2 overflow-visible">
           {pieces.map((piece) => (
             <div
               key={piece.id}
-              className="pointer-events-auto relative z-10 min-h-[44px] min-w-[44px]"
+              className="pointer-events-auto relative z-10 min-h-[44px] min-w-[44px] overflow-visible"
               style={{
                 gridColumn: piece.col + 1,
                 gridRow: piece.row + 1,
