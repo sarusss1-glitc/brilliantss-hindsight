@@ -10,7 +10,6 @@ permissions:
   pages: write
   id-token: write
   actions: read
-  administration: write
 
 concurrency:
   group: pages
@@ -25,11 +24,6 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - name: Enable and configure GitHub Pages
-        uses: actions/configure-pages@v4
-        with:
-          enablement: true
-        continue-on-error: true
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
