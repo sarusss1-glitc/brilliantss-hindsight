@@ -8,9 +8,9 @@ export type LevelMapProps = {
   onBack: () => void;
 };
 
-function isReachable(id: number, completed: Record<number, number>): boolean {
-  if (id === 1) return true;
-  return completed[id - 1] !== undefined;
+/** All levels are selectable from the map (no sequential lock). */
+function isReachable(): boolean {
+  return true;
 }
 
 const WORLD_HEADERS: Record<number, string> = {
