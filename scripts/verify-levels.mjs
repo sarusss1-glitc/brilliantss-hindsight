@@ -6,11 +6,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const { minMovesToSolve } = await import(
   pathToFileURL(join(root, "src/logic/levelSolver.ts")).href,
 );
-const { ADVANCED_LEVELS } = await import(
-  pathToFileURL(join(root, "src/data/advancedLevels.ts")).href,
+const { GENERATED_LEVELS } = await import(
+  pathToFileURL(join(root, "src/data/generatedLevels.ts")).href,
 );
+const LEVELS = GENERATED_LEVELS;
 
-for (const level of ADVANCED_LEVELS) {
+for (const level of LEVELS) {
   const pieces = level.pieces.map((p) => ({
     ...p,
     undoPath: [...p.undoPath],

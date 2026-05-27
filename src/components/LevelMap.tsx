@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { LEVELS } from "../data/levels";
 
 export type LevelMapProps = {
@@ -11,6 +12,13 @@ function isReachable(id: number, completed: Record<number, number>): boolean {
   if (id === 1) return true;
   return completed[id - 1] !== undefined;
 }
+
+const WORLD_HEADERS: Record<number, string> = {
+  1: "World 1 · The Basics",
+  21: "World 2 · The Tangle",
+  51: "World 3 · Traffic Jam",
+  81: "World 4 · Brain Melter",
+};
 
 export function LevelMap({
   completedLevels,
@@ -38,8 +46,15 @@ export function LevelMap({
             const stars = completedLevels[level.id];
             const done = stars !== undefined;
             const current = level.id === currentLevelId;
+            const worldLabel = WORLD_HEADERS[level.id];
 
             return (
+              <Fragment key={level.id}>
+                {worldLabel && (
+                  <h2 className="col-span-3 pt-2 text-xs font-semibold uppercase tracking-wider text-white/50">
+                    {worldLabel}
+                  </h2>
+                )}
               <button
                 key={level.id}
                 type="button"
@@ -67,6 +82,7 @@ export function LevelMap({
                   </span>
                 )}
               </button>
+              </Fragment>
             );
           })}
         </div>

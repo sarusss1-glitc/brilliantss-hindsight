@@ -9,7 +9,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:levels": "npx tsx scripts/verify-levels.mjs"
+    "verify:levels": "npx tsx scripts/verify-levels.mjs",
+    "generate:levels": "npx tsx scripts/finish-from-checkpoint.ts",
+    "generate:levels:partial": "npx tsx scripts/finish-from-checkpoint.ts --partial-only",
+    "generate:levels:tail": "npx tsx scripts/mine-remaining.ts",
+    "generate:levels:fresh": "npx tsx scripts/generate-levels.ts --fresh"
   },
   "dependencies": {
     "react": "^19.0.0",

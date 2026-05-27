@@ -1,2 +1,2 @@
-// Advanced baseline curve (stack + elastic push).
-export { ADVANCED_LEVELS as LEVELS } from "./advancedLevels";
+// 100 procedurally mined levels (see scripts/levelGenerator.ts).
+export { GENERATED_LEVELS as LEVELS } from "./generatedLevels";

@@ -11,16 +11,20 @@ function stateKey(pieces: Piece[]): string {
     .join("|");
 }
 
+function clonePieces(pieces: Piece[]): Piece[] {
+  return pieces.map((p) => ({
+    ...p,
+    undoPath: [...p.undoPath],
+    movesLeft: p.undoPath.length,
+  }));
+}
+
 /** BFS minimum moves to clear the board (for level validation). */
 export function minMovesToSolve(
   initial: Piece[],
   maxDepth = 64,
 ): number | null {
-  const start = initial.map((p) => ({
-    ...p,
-    undoPath: [...p.undoPath],
-    movesLeft: p.undoPath.length,
-  }));
+  const start = clonePieces(initial);
 
   if (checkWin(start)) return 0;
 
@@ -47,4 +51,59 @@ export function minMovesToSolve(
   }
 
   return null;
+}
+
+/**
+ * Count distinct winning click sequences (piece-id order matters).
+ * Used to prove a level has exactly one valid chronological solution.
+ */
+export function countWinningClickSequences(
+  initial: Piece[],
+  maxDepth = 64,
+): number {
+  const start = clonePieces(initial);
+  let count = 0;
+
+  function dfs(pieces: Piece[], depth: number): void {
+    if (checkWin(pieces)) {
+      count++;
+      return;
+    }
+    if (depth >= maxDepth) return;
+
+    for (const p of pieces) {
+      const { result, updatedPieces } = undoPiece(pieces, p.id);
+      if (result !== "success") continue;
+      dfs(updatedPieces, depth + 1);
+    }
+  }
+
+  dfs(start, 0);
+  return count;
+}
+
+/** All winning click sequences (for debugging level design). */
+export function listWinningClickSequences(
+  initial: Piece[],
+  maxDepth = 64,
+): string[][] {
+  const start = clonePieces(initial);
+  const sequences: string[][] = [];
+
+  function dfs(pieces: Piece[], depth: number, clicks: string[]): void {
+    if (checkWin(pieces)) {
+      sequences.push([...clicks]);
+      return;
+    }
+    if (depth >= maxDepth) return;
+
+    for (const p of pieces) {
+      const { result, updatedPieces } = undoPiece(pieces, p.id);
+      if (result !== "success") continue;
+      dfs(updatedPieces, depth + 1, [...clicks, p.id]);
+    }
+  }
+
+  dfs(start, 0, []);
+  return sequences;
 }

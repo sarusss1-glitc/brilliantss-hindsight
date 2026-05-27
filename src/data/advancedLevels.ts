@@ -50,79 +50,108 @@ export const ADVANCED_LEVELS: Level[] = [
   },
   {
     id: 2,
-    title: "Crossroads",
-    subtitle: "3 pieces — Level 2",
-    category: "tree",
+    title: "The Piggyback",
+    subtitle: "Required repositioning",
+    category: "chain",
     concept:
-      "Paths cross. A push that helps one piece can unblock two others — or trap you if the order is wrong.",
-    dependency_label: "C → B → A",
-    solution_hint: "Green is the key at the top. Watch who blocks the left column.",
+      "Red cannot clear the board alone — its stack is too short from this lane. " +
+      "Blue must move first and reposition Red before Red can finish escaping.",
+    dependency_label: "B → A → B",
+    solution_hint: "Blue moves first. Red must complete both arrows before Blue turns right.",
     pieces: [
-      // Spec paths; row/col tuned so each stack clears solo (first segment in-bounds).
       piece({
         id: "A",
         color: "red",
         row: 2,
-        col: 2,
-        undoPath: ["left", "down", "down", "down"],
+        col: 1,
+        undoPath: ["up", "up"],
       }),
       piece({
         id: "B",
-        color: "orange",
-        row: 2,
+        color: "blue",
+        row: 3,
         col: 1,
-        undoPath: ["left", "left", "left"],
-      }),
-      piece({
-        id: "C",
-        color: "green",
-        row: 2,
-        col: 3,
-        undoPath: ["up", "up"],
+        undoPath: ["up", "right", "right", "right"],
       }),
     ],
-    optimal_moves: 9,
+    optimal_moves: 6,
   },
   {
     id: 3,
-    title: "Brain Melter",
-    subtitle: "4 pieces — Level 3",
+    title: "Friendly Fire",
+    subtitle: "Order of operations",
+    category: "tree",
+    concept:
+      "Green points right into Yellow. If Green moves first, the push ruins Yellow's escape. " +
+      "Yellow must clear before Green — the purple blocker at the top corner is the trap.",
+    dependency_label: "B → A → C",
+    solution_hint: "Yellow exits upward first. Never let Green shove Yellow into the corner.",
+    pieces: [
+      piece({
+        id: "A",
+        color: "green",
+        row: 2,
+        col: 1,
+        undoPath: ["right", "right", "right"],
+      }),
+      piece({
+        id: "B",
+        color: "yellow",
+        row: 2,
+        col: 2,
+        undoPath: ["up", "up", "up"],
+      }),
+      piece({
+        id: "C",
+        color: "purple",
+        row: 0,
+        col: 3,
+        undoPath: ["down", "down", "down", "down"],
+      }),
+    ],
+    optimal_moves: 10,
+  },
+  {
+    id: 4,
+    title: "The Knot",
+    subtitle: "Multi-step untangling",
     category: "bottleneck",
     concept:
-      "Four stacks tangled in the center. You will need several precise pushes — " +
-      "reposition blockers without wasting a single segment from anyone's stack.",
-    dependency_label: "multi-push untangle",
-    solution_hint: "No piece exits on its first tap. Plan pushes before final exits.",
+      "Three pieces gridlocked in a 3×3 knot. No piece can exit on the first tap — " +
+      "calculate pushes several steps ahead before anyone leaves the board.",
+    dependency_label: "B → A → C",
+    solution_hint:
+      "Teal moves down first to open the knot. Then Red, then Blue to the right.",
     pieces: [
       piece({
         id: "A",
         color: "red",
-        row: 0,
-        col: 2,
-        undoPath: ["up", "up", "up", "up"],
+        row: 1,
+        col: 1,
+        undoPath: ["up", "up"],
       }),
       piece({
         id: "B",
         color: "blue",
         row: 2,
         col: 1,
-        undoPath: ["right", "right"],
+        undoPath: ["right", "right", "right"],
       }),
       piece({
         id: "C",
-        color: "green",
-        row: 1,
-        col: 3,
-        undoPath: ["up", "up", "up"],
-      }),
-      piece({
-        id: "D",
-        color: "yellow",
-        row: 1,
+        color: "teal",
+        row: 2,
         col: 2,
-        undoPath: ["left", "left"],
+        undoPath: ["down", "down"],
       }),
     ],
-    optimal_moves: 11,
+    optimal_moves: 7,
   },
 ];
+
+/** Canonical winning click order per level (for tests and hints). */
+export const CANONICAL_SOLUTIONS: Record<number, string[]> = {
+  2: ["B", "A", "A", "B", "B", "B"],
+  3: ["B", "B", "B", "A", "A", "A", "C", "C", "C", "C"],
+  4: ["C", "C", "A", "A", "B", "B", "B"],
+};

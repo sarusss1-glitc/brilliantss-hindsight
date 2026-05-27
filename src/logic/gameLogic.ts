@@ -19,13 +19,13 @@ export function getUndoTargetFromPosition(
 ): { row: number; col: number } {
   switch (dir) {
     case "right":
-      return { row, col: col - 1 };
-    case "left":
       return { row, col: col + 1 };
+    case "left":
+      return { row, col: col - 1 };
     case "down":
-      return { row: row - 1, col };
-    case "up":
       return { row: row + 1, col };
+    case "up":
+      return { row: row - 1, col };
   }
 }
 
