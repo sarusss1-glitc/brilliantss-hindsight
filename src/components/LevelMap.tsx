@@ -8,11 +8,6 @@ export type LevelMapProps = {
   onBack: () => void;
 };
 
-/** All levels are selectable from the map (no sequential lock). */
-function isReachable(): boolean {
-  return true;
-}
-
 const WORLD_HEADERS: Record<number, string> = {
   1: "World 1 · The Basics",
   21: "World 2 · The Tangle",
@@ -42,7 +37,6 @@ export function LevelMap({
         </header>
         <div className="grid grid-cols-3 gap-4">
           {LEVELS.map((level, index) => {
-            const reachable = isReachable(level.id, completedLevels);
             const stars = completedLevels[level.id];
             const done = stars !== undefined;
             const current = level.id === currentLevelId;
@@ -56,25 +50,20 @@ export function LevelMap({
                   </h2>
                 )}
               <button
-                key={level.id}
                 type="button"
-                disabled={!reachable}
-                onClick={() => reachable && onSelectLevel(level.id)}
+                onClick={() => onSelectLevel(level.id)}
                 style={{ animationDelay: `${index * 30}ms` }}
                 className={[
                   "flex min-h-[88px] flex-col items-center justify-center rounded-xl border-2 p-3 text-sm font-semibold transition-opacity animate-[fadeNode_0.4s_ease-out_forwards]",
-                  !reachable
-                    ? "cursor-not-allowed border-white/10 bg-white/5 text-white/30"
-                    : done
-                      ? "border-sky-400/60 bg-sky-500/20 text-white"
-                      : "border-white/40 bg-white/5 text-white hover:bg-white/10",
+                  done
+                    ? "border-sky-400/60 bg-sky-500/20 text-white"
+                    : "border-white/40 bg-white/5 text-white hover:bg-white/10",
                   current ? "ring-2 ring-white ring-offset-2 ring-offset-[#0D1B2A]" : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
               >
                 <span className="text-lg">{level.id}</span>
-                {!reachable && <span className="mt-1 text-xs">🔒</span>}
                 {done && (
                   <span className="mt-1 text-xs">
                     {"⭐".repeat(stars)}

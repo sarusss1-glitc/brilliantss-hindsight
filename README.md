@@ -31,7 +31,7 @@ npm run verify:levels           # solvability check
 After push to `main`, Actions builds and deploys to  
 https://sarusss1-glitc.github.io/brilliantss-hindsight/
 
-If deploy fails on the first run: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+The workflow enables Pages automatically (`enablement: true`). If deploy still fails once, open **Settings → Pages → Build and deployment → Source: GitHub Actions** and re-run the workflow.
 
 ## Stack
 
